@@ -9,13 +9,13 @@ import {
     Save,
     Loader2,
     Package,
-    ChevronLeft,
     Mountain,
     Database,
     AlertTriangle,
     Check,
 } from "lucide-react";
 import Link from "next/link";
+import AdminNav from "@/components/AdminNav";
 
 /* ───── Types ───── */
 type ItineraryItem = { day: number; title: string; description: string };
@@ -278,80 +278,41 @@ export default function AdminDashboard() {
                 </div>
             )}
 
-            {/* ── Header ── */}
-            <header
-                style={{
-                    background: "linear-gradient(135deg, var(--color-terracotta), var(--color-sunset))",
-                    padding: "1.5rem 0",
-                    boxShadow: "0 2px 20px rgba(192,92,58,0.2)",
-                }}
-            >
-                <div className="container-custom" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <Link
-                            href="/"
-                            style={{
-                                color: "rgba(255,255,255,0.8)",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.25rem",
-                                fontSize: "0.85rem",
-                                textDecoration: "none",
-                            }}
-                        >
-                            <ChevronLeft size={16} /> Back to Site
-                        </Link>
-                        <div style={{ width: 1, height: 24, background: "rgba(255,255,255,0.3)" }} />
-                        <h1 style={{ color: "#fff", fontSize: "1.4rem", margin: 0, display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                            <Mountain size={24} /> Admin Dashboard
-                        </h1>
-                    </div>
-                    <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-                        {dataSource === "static" && (
-                            <button
-                                onClick={handleSeed}
-                                disabled={seeding}
-                                style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    gap: "0.5rem",
-                                    padding: "0.6rem 1.25rem",
-                                    borderRadius: "999px",
-                                    border: "1px solid rgba(255,255,255,0.4)",
-                                    background: "rgba(255,255,255,0.15)",
-                                    color: "#fff",
-                                    fontWeight: 600,
-                                    fontSize: "0.85rem",
-                                    cursor: seeding ? "not-allowed" : "pointer",
-                                    opacity: seeding ? 0.7 : 1,
-                                }}
-                            >
-                                {seeding ? <Loader2 size={16} className="animate-spin" /> : <Database size={16} />}
-                                {seeding ? "Seeding…" : "Seed DB with Static Data"}
-                            </button>
-                        )}
-                        <button
-                            onClick={openCreate}
-                            style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                padding: "0.6rem 1.25rem",
-                                borderRadius: "999px",
-                                border: "none",
-                                background: "#fff",
-                                color: "var(--color-terracotta)",
-                                fontWeight: 700,
-                                fontSize: "0.85rem",
-                                cursor: "pointer",
-                                boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                            }}
-                        >
-                            <Plus size={16} /> Add New Trip
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <AdminNav />
+
+            {/* ── Action Bar ── */}
+            <div className="container-custom" style={{ marginTop: "1.5rem", display: "flex", justifyContent: "flex-end", gap: "0.75rem", flexWrap: "wrap" }}>
+                {dataSource === "static" && (
+                    <button
+                        onClick={handleSeed}
+                        disabled={seeding}
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                            padding: "0.6rem 1.25rem",
+                            borderRadius: "999px",
+                            border: "1px solid var(--color-border)",
+                            background: "var(--color-surface)",
+                            color: "var(--color-terracotta)",
+                            fontWeight: 600,
+                            fontSize: "0.85rem",
+                            cursor: seeding ? "not-allowed" : "pointer",
+                            opacity: seeding ? 0.7 : 1,
+                        }}
+                    >
+                        {seeding ? <Loader2 size={16} className="animate-spin" /> : <Database size={16} />}
+                        {seeding ? "Seeding…" : "Seed DB with Static Data"}
+                    </button>
+                )}
+                <button
+                    onClick={openCreate}
+                    className="btn-primary"
+                    style={{ fontSize: "0.85rem" }}
+                >
+                    <Plus size={16} /> Add New Trip
+                </button>
+            </div>
 
             {/* ── Stats Bar ── */}
             <div className="container-custom" style={{ marginTop: "1.5rem" }}>

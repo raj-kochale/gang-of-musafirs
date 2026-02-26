@@ -3,9 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
+import UserMenu from "./UserMenu";
 
 const navLinks = [
   { label: "Packages", href: "/packages" },
+  { label: "Blog", href: "/blog" },
+  { label: "My Bookings", href: "/my-bookings" },
   { label: "About", href: "/#about" },
   { label: "Reviews", href: "/#testimonials" },
   { label: "Contact", href: "/contact" },
@@ -31,7 +35,7 @@ export default function Navbar() {
         zIndex: 999,
         transition: "all 0.3s ease",
         background: scrolled
-          ? "rgba(255,250,247,0.92)"
+          ? "var(--color-navbar-bg)"
           : "transparent",
         backdropFilter: scrolled ? "blur(16px)" : "none",
         borderBottom: scrolled ? "1px solid var(--color-border)" : "none",
@@ -104,6 +108,8 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
+          <UserMenu />
           <a
             href="https://wa.me/917354177879?text=Hi!%20I%27d%20like%20to%20plan%20a%20trip%20with%20GangOfMusafirs"
             target="_blank"
@@ -115,29 +121,31 @@ export default function Navbar() {
           </a>
         </nav>
 
-        {/* Mobile Hamburger */}
-        <button
-          id="navbar-hamburger"
-          onClick={() => setOpen(!open)}
-          style={{
-            display: "none",
-            background: "none",
-            border: "none",
-            color: "var(--color-text)",
-            cursor: "pointer",
-          }}
-          className="show-mobile"
-          aria-label="Toggle menu"
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Mobile Controls */}
+        <div className="show-mobile" style={{ display: "none", alignItems: "center", gap: "0.5rem" }}>
+          <UserMenu />
+          <ThemeToggle />
+          <button
+            id="navbar-hamburger"
+            onClick={() => setOpen(!open)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "var(--color-text)",
+              cursor: "pointer",
+            }}
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Drawer */}
       {open && (
         <div
           style={{
-            background: "rgba(255,250,247,0.98)",
+            background: "var(--color-drawer-bg)",
             backdropFilter: "blur(20px)",
             borderTop: "1px solid var(--color-border)",
             padding: "1.5rem",

@@ -27,8 +27,8 @@ export default function PackageCard({ pkg }: Props) {
         }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)";
-          (e.currentTarget as HTMLElement).style.borderColor = "rgba(192,92,58,0.3)";
-          (e.currentTarget as HTMLElement).style.boxShadow = "0 15px 40px rgba(192,92,58,0.1)";
+          (e.currentTarget as HTMLElement).style.borderColor = "var(--color-hover-border)";
+          (e.currentTarget as HTMLElement).style.boxShadow = "0 15px 40px var(--color-hover-shadow)";
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
@@ -76,7 +76,9 @@ export default function PackageCard({ pkg }: Props) {
               position: "absolute",
               top: "1rem",
               left: "1rem",
-              background: "rgba(192,92,58,0.85)",
+              background: "rgba(192,92,58,0.9)",
+              color: "#fff",
+              border: "none",
             }}
           >
             {pkg.category}
@@ -87,7 +89,7 @@ export default function PackageCard({ pkg }: Props) {
               position: "absolute",
               top: "1rem",
               right: "1rem",
-              background: "rgba(255,255,255,0.8)",
+              background: "var(--color-rating-bg)",
               backdropFilter: "blur(8px)",
               borderRadius: "999px",
               padding: "0.25rem 0.6rem",

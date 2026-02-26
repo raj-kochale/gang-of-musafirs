@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PackageCard from "@/components/PackageCard";
-import { packages } from "@/lib/data";
+import { packages as staticPackages } from "@/lib/data";
+import type { Package } from "@/lib/data";
 import { MessageCircle } from "lucide-react";
 
 const CATEGORIES = ["All", "Hill Stations", "Beaches", "Adventure", "Cultural", "Custom"];
@@ -15,13 +16,26 @@ function PackagesContent() {
   const searchParams = useSearchParams();
   const initialCat = searchParams.get("category") || "All";
   const [active, setActive] = useState(initialCat);
+  const [packages, setPackages] = useState<Package[]>(staticPackages);
+
+  const fetchPackages = useCallback(async () => {
+    try {
+      const res = await fetch("/api/packages");
+      const data = await res.json();
+      if (data.packages?.length > 0) setPackages(data.packages);
+    } catch {
+      // keep static fallback
+    }
+  }, []);
+
+  useEffect(() => { fetchPackages(); }, [fetchPackages]);
 
   const filtered = useMemo(
     () =>
       active === "All"
         ? packages
         : packages.filter((p) => p.category === active),
-    [active]
+    [active, packages]
   );
 
   return (

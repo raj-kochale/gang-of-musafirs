@@ -52,6 +52,28 @@ export default function InquiryForm({ prefilledDestination }: Props) {
     setLoading(true);
     setError("");
 
+    // ── Client-side validation ──
+    const nameClean = form.fullName.trim();
+    if (nameClean.length < 2 || nameClean.length > 100) {
+      setError("Name must be 2–100 characters."); setLoading(false); return;
+    }
+    const phoneDigits = form.phone.replace(/[\s\-().]/g, "");
+    if (!/^\+?\d{10,15}$/.test(phoneDigits)) {
+      setError("Enter a valid 10-digit phone number."); setLoading(false); return;
+    }
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(form.email) || form.email.length > 254) {
+      setError("Enter a valid email address."); setLoading(false); return;
+    }
+    if (form.destination.trim().length < 2) {
+      setError("Destination is required."); setLoading(false); return;
+    }
+    const travelD = new Date(form.travelDate);
+    const today = new Date(); today.setHours(0,0,0,0);
+    if (isNaN(travelD.getTime()) || travelD < today) {
+      setError("Travel date must be today or in the future."); setLoading(false); return;
+    }
+
     try {
       const res = await fetch("/api/inquiry", {
         method: "POST",
@@ -131,6 +153,8 @@ export default function InquiryForm({ prefilledDestination }: Props) {
             name="fullName"
             type="text"
             required
+            minLength={2}
+            maxLength={100}
             placeholder="Rahul Sharma"
             className="input-field"
             value={form.fullName}
@@ -144,6 +168,9 @@ export default function InquiryForm({ prefilledDestination }: Props) {
             name="phone"
             type="tel"
             required
+            pattern="[+]?[0-9\s\-]{10,15}"
+            maxLength={15}
+            title="Enter a valid 10-digit phone number"
             placeholder="+91 98765 43210"
             className="input-field"
             value={form.phone}
@@ -174,6 +201,8 @@ export default function InquiryForm({ prefilledDestination }: Props) {
             name="destination"
             type="text"
             required
+            minLength={2}
+            maxLength={200}
             placeholder="Manali, Goa, Rajasthan..."
             className="input-field"
             value={form.destination}
@@ -191,6 +220,7 @@ export default function InquiryForm({ prefilledDestination }: Props) {
             name="travelDate"
             type="date"
             required
+            min={new Date().toISOString().split("T")[0]}
             className="input-field"
             value={form.travelDate}
             onChange={handleChange}

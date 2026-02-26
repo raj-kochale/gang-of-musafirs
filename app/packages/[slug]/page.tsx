@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { notFound } from "next/navigation";
 import { use } from "react";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import InquiryForm from "@/components/InquiryForm";
-import { packages } from "@/lib/data";
+import { packages as staticPackages } from "@/lib/data";
+import type { Package } from "@/lib/data";
 import {
   MapPin,
   Clock,
@@ -16,7 +18,11 @@ import {
   XCircle,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   MessageCircle,
+  X,
+  ZoomIn,
 } from "lucide-react";
 
 export default function PackageDetailPage({
@@ -25,10 +31,41 @@ export default function PackageDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const pkg = packages.find((p) => p.slug === slug);
+  const staticMatch = staticPackages.find((p) => p.slug === slug);
+  const [pkg, setPkg] = useState<Package | undefined>(staticMatch);
+  const [loading, setLoading] = useState(!staticMatch);
   const [openDay, setOpenDay] = useState<number | null>(0);
   const [activeImg, setActiveImg] = useState(0);
   const [showForm, setShowForm] = useState(false);
+  const [lightbox, setLightbox] = useState<number | null>(null);
+
+  const fetchPackage = useCallback(async () => {
+    try {
+      const res = await fetch("/api/packages");
+      const data = await res.json();
+      if (data.packages?.length > 0) {
+        const found = data.packages.find((p: Package) => p.slug === slug);
+        if (found) setPkg(found);
+      }
+    } catch {
+      // keep static fallback
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
+
+  useEffect(() => { fetchPackage(); }, [fetchPackage]);
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <p style={{ color: "var(--color-muted)", fontSize: "1.1rem" }}>Loading trip details…</p>
+        </div>
+      </>
+    );
+  }
 
   if (!pkg) return notFound();
 
@@ -49,15 +86,42 @@ export default function PackageDetailPage({
         <img
           src={pkg.gallery[activeImg]}
           alt={pkg.name}
-          style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity 0.4s ease" }}
+          onClick={() => setLightbox(activeImg)}
+          style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity 0.4s ease", cursor: "zoom-in" }}
         />
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to top, var(--color-bg) 0%, rgba(255,250,247,0.4) 60%, transparent 100%)",
+            background: "linear-gradient(to top, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 40%, transparent) 60%, transparent 100%)",
+            pointerEvents: "none",
           }}
         />
+        {/* Zoom hint */}
+        <button
+          onClick={() => setLightbox(activeImg)}
+          style={{
+            position: "absolute",
+            top: "1.25rem",
+            right: "1.25rem",
+            width: 42,
+            height: 42,
+            borderRadius: "50%",
+            background: "rgba(0,0,0,0.45)",
+            backdropFilter: "blur(6px)",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            zIndex: 5,
+            transition: "background 0.2s",
+          }}
+          aria-label="View gallery"
+        >
+          <ZoomIn size={20} />
+        </button>
         {/* Text Overlay */}
         <div
           className="container-custom"
@@ -112,7 +176,7 @@ export default function PackageDetailPage({
           {pkg.gallery.map((img, i) => (
             <button
               key={i}
-              onClick={() => setActiveImg(i)}
+              onClick={() => { setActiveImg(i); setLightbox(i); }}
               style={{
                 flexShrink: 0,
                 width: "90px",
@@ -358,7 +422,14 @@ export default function PackageDetailPage({
 
               {/* CTA buttons */}
               <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                <button id="enquire-now-btn" className="btn-primary" style={{ justifyContent: "center" }} onClick={() => setShowForm((v) => !v)}>
+                <Link
+                  href={`/book?package=${pkg.slug}`}
+                  className="btn-primary"
+                  style={{ justifyContent: "center", textAlign: "center", textDecoration: "none" }}
+                >
+                  Book Now – ₹{pkg.price.toLocaleString("en-IN")}/person
+                </Link>
+                <button id="enquire-now-btn" className="btn-secondary" style={{ justifyContent: "center" }} onClick={() => setShowForm((v) => !v)}>
                   {showForm ? "Hide Form" : "Enquire Now"}
                 </button>
                 <a
@@ -400,7 +471,182 @@ export default function PackageDetailPage({
       </a>
       <Footer />
 
+      {/* ─── LIGHTBOX POPUP ─── */}
+      {lightbox !== null && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            background: "rgba(0,0,0,0.92)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            animation: "lbFadeIn 0.25s ease-out",
+          }}
+          onClick={() => setLightbox(null)}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setLightbox(null)}
+            style={{
+              position: "absolute",
+              top: "1.25rem",
+              right: "1.25rem",
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.12)",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              zIndex: 10,
+              transition: "background 0.2s",
+            }}
+            aria-label="Close gallery"
+          >
+            <X size={22} />
+          </button>
+
+          {/* Counter */}
+          <div
+            style={{
+              position: "absolute",
+              top: "1.5rem",
+              left: "50%",
+              transform: "translateX(-50%)",
+              color: "rgba(255,255,255,0.7)",
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+            }}
+          >
+            {lightbox + 1} / {pkg.gallery.length}
+          </div>
+
+          {/* Prev button */}
+          {pkg.gallery.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightbox((lightbox - 1 + pkg.gallery.length) % pkg.gallery.length);
+              }}
+              style={{
+                position: "absolute",
+                left: "1rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.1)",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                transition: "background 0.2s",
+                zIndex: 10,
+              }}
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={26} />
+            </button>
+          )}
+
+          {/* Next button */}
+          {pkg.gallery.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightbox((lightbox + 1) % pkg.gallery.length);
+              }}
+              style={{
+                position: "absolute",
+                right: "1rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 48,
+                height: 48,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.1)",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#fff",
+                transition: "background 0.2s",
+                zIndex: 10,
+              }}
+              aria-label="Next image"
+            >
+              <ChevronRight size={26} />
+            </button>
+          )}
+
+          {/* Main image */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={pkg.gallery[lightbox]}
+            alt={`${pkg.name} - Image ${lightbox + 1}`}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              maxWidth: "90vw",
+              maxHeight: "80vh",
+              objectFit: "contain",
+              borderRadius: "0.75rem",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+              animation: "lbZoomIn 0.3s ease-out",
+            }}
+          />
+
+          {/* Bottom thumbnails */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+              marginTop: "1.25rem",
+              overflowX: "auto",
+              maxWidth: "90vw",
+              padding: "0.25rem",
+            }}
+          >
+            {pkg.gallery.map((img, i) => (
+              <button
+                key={i}
+                onClick={() => setLightbox(i)}
+                style={{
+                  flexShrink: 0,
+                  width: 64,
+                  height: 48,
+                  borderRadius: "0.4rem",
+                  overflow: "hidden",
+                  border: lightbox === i ? "2px solid #fff" : "2px solid transparent",
+                  opacity: lightbox === i ? 1 : 0.5,
+                  cursor: "pointer",
+                  padding: 0,
+                  transition: "all 0.2s ease",
+                  background: "none",
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img} alt={`Thumb ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <style>{`
+        @keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes lbZoomIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @media (max-width: 900px) {
           main > .container-custom {
             grid-template-columns: 1fr !important;

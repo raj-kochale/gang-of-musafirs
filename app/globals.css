@@ -23,6 +23,43 @@
   --color-sage-light: #A8C5AB;
   --color-sunset: #F4845F;
   --color-sunset-light: #F9A97A;
+
+  /* Navbar / overlays */
+  --color-navbar-bg: rgba(255, 250, 247, 0.92);
+  --color-drawer-bg: rgba(255, 250, 247, 0.98);
+  --color-rating-bg: rgba(255, 255, 255, 0.8);
+  --color-card-shadow: rgba(45, 31, 20, 0.04);
+  --color-card-hover-shadow: rgba(45, 31, 20, 0.08);
+  --color-hover-border: rgba(192, 92, 58, 0.3);
+  --color-hover-shadow: rgba(192, 92, 58, 0.1);
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --color-primary: #D4744E;
+  --color-primary-light: #2A1E16;
+  --color-accent: #F49A7A;
+  --color-bg: #1A1210;
+  --color-surface: #231B17;
+  --color-card: #2A211C;
+  --color-border: #3D322B;
+  --color-text: #F0E8E2;
+  --color-muted: #A89888;
+
+  --color-terracotta: #D4744E;
+  --color-terracotta-light: #E8956E;
+  --color-sage: #8EBB92;
+  --color-sage-light: #B0D4B3;
+  --color-sunset: #F49A7A;
+  --color-sunset-light: #F7B99A;
+
+  --color-navbar-bg: rgba(26, 18, 16, 0.92);
+  --color-drawer-bg: rgba(26, 18, 16, 0.98);
+  --color-rating-bg: rgba(42, 33, 28, 0.9);
+  --color-card-shadow: rgba(0, 0, 0, 0.2);
+  --color-card-hover-shadow: rgba(0, 0, 0, 0.3);
+  --color-hover-border: rgba(212, 116, 78, 0.4);
+  --color-hover-shadow: rgba(212, 116, 78, 0.15);
 }
 
 * {
@@ -42,6 +79,7 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1,
@@ -114,7 +152,7 @@ h6 {
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   border-radius: 1rem;
-  box-shadow: 0 1px 4px rgba(45, 31, 20, 0.04);
+  box-shadow: 0 1px 4px var(--color-card-shadow);
 }
 
 .hover-lift {
@@ -122,7 +160,7 @@ h6 {
 }
 .hover-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(45, 31, 20, 0.08);
+  box-shadow: 0 6px 20px var(--color-card-hover-shadow);
 }
 
 /* Gradient text */
@@ -315,7 +353,7 @@ h6 {
 /* Hidden on mobile / shown on mobile (global) */
 @media (max-width: 768px) {
   .hidden-mobile { display: none !important; }
-  .show-mobile { display: block !important; }
+  .show-mobile { display: flex !important; }
 }
 
 @media (min-width: 769px) {

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import ThemeProvider from "@/components/ThemeProvider";
+import SessionProvider from "@/components/SessionProvider";
 import "./globals.css";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
@@ -42,7 +44,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        {children}
+        <SessionProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </SessionProvider>
         {/* Google Analytics */}
         {GA_ID && (
           <>
@@ -60,6 +66,11 @@ export default function RootLayout({
             </Script>
           </>
         )}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('gom-theme');if(t){document.documentElement.setAttribute('data-theme',t)}else if(window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}})()`
+          }}
+        />
       </body>
     </html>
   );

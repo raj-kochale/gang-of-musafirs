@@ -9,6 +9,7 @@ const quickLinks = [
   { label: "Beaches", href: "/packages?category=Beaches" },
   { label: "Adventure Trips", href: "/packages?category=Adventure" },
   { label: "Cultural Tours", href: "/packages?category=Cultural" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact Us", href: "/contact" },
 ];
 

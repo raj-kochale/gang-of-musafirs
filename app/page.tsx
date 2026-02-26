@@ -11,14 +11,30 @@ import {
   Globe2,
   ChevronRight,
 } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PackageCard from "@/components/PackageCard";
 import TestimonialCard from "@/components/TestimonialCard";
 import ScrollReveal from "@/components/ScrollReveal";
-import { packages, testimonials, stats, whyUs } from "@/lib/data";
+import { packages as staticPackages, testimonials, stats, whyUs } from "@/lib/data";
+import type { Package } from "@/lib/data";
 
 export default function HomePage() {
+  const [packages, setPackages] = useState<Package[]>(staticPackages);
+
+  const fetchPackages = useCallback(async () => {
+    try {
+      const res = await fetch("/api/packages");
+      const data = await res.json();
+      if (data.packages?.length > 0) setPackages(data.packages);
+    } catch {
+      // keep static fallback
+    }
+  }, []);
+
+  useEffect(() => { fetchPackages(); }, [fetchPackages]);
+
   const featured = packages.slice(0, 4);
 
   return (
