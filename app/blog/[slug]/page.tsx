@@ -67,8 +67,8 @@ export default async function BlogPostPage({ params }: Props) {
                 style={{
                     background:
                         "linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-light) 100%)",
-                    paddingTop: "8rem",
-                    paddingBottom: "3rem",
+                    paddingTop: "clamp(6rem, 12vw, 8rem)",
+                    paddingBottom: "2rem",
                 }}
             >
                 <div

@@ -84,8 +84,8 @@ export default function MyBookingsPage() {
                 style={{
                     background:
                         "linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-light) 100%)",
-                    paddingTop: "7rem",
-                    paddingBottom: "2.5rem",
+                    paddingTop: "clamp(5.5rem, 11vw, 7rem)",
+                    paddingBottom: "2rem",
                 }}
             >
                 <div className="container-custom" style={{ maxWidth: 700 }}>
@@ -110,13 +110,14 @@ export default function MyBookingsPage() {
                     {/* Email search */}
                     <form
                         onSubmit={handleSubmit}
-                        className="glass"
+                        className="glass bookings-search-form"
                         style={{
                             display: "flex",
                             gap: "0.75rem",
                             padding: "1rem 1.25rem",
                             marginBottom: "2rem",
                             alignItems: "center",
+                            flexWrap: "wrap",
                         }}
                     >
                         <input
@@ -289,7 +290,18 @@ export default function MyBookingsPage() {
 
             <Footer />
 
-            <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+            <style>{`
+              @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+              @media (max-width: 480px) {
+                .bookings-search-form {
+                  flex-direction: column !important;
+                }
+                .bookings-search-form .btn-primary {
+                  width: 100%;
+                  justify-content: center;
+                }
+              }
+            `}</style>
         </>
     );
 }

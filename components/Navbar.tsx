@@ -57,7 +57,7 @@ export default function Navbar() {
               style={{
                 fontFamily: "var(--font-outfit)",
                 fontWeight: 800,
-                fontSize: "1.4rem",
+                fontSize: "clamp(1.15rem, 3.5vw, 1.4rem)",
                 background: "linear-gradient(135deg, var(--color-terracotta), var(--color-sunset))",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",

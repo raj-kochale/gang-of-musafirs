@@ -23,6 +23,8 @@ import {
   MessageCircle,
   X,
   ZoomIn,
+  Calendar,
+  Shield,
 } from "lucide-react";
 
 export default function PackageDetailPage({
@@ -38,6 +40,7 @@ export default function PackageDetailPage({
   const [activeImg, setActiveImg] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "itinerary" | "details">("overview");
 
   const fetchPackage = useCallback(async () => {
     try {
@@ -69,6 +72,12 @@ export default function PackageDetailPage({
 
   if (!pkg) return notFound();
 
+  const tabs = [
+    { key: "overview" as const, label: "Overview" },
+    { key: "itinerary" as const, label: "Itinerary" },
+    { key: "details" as const, label: "Details" },
+  ];
+
   return (
     <>
       <Navbar />
@@ -77,8 +86,9 @@ export default function PackageDetailPage({
       <section
         style={{
           position: "relative",
-          height: "55vh",
-          minHeight: "380px",
+          height: "60vh",
+          minHeight: "400px",
+          maxHeight: "550px",
           overflow: "hidden",
         }}
       >
@@ -87,53 +97,78 @@ export default function PackageDetailPage({
           src={pkg.gallery[activeImg]}
           alt={pkg.name}
           onClick={() => setLightbox(activeImg)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity 0.4s ease", cursor: "zoom-in" }}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transition: "opacity 0.5s ease",
+            cursor: "zoom-in",
+            filter: "brightness(0.75)",
+          }}
         />
+        {/* Dark gradient overlay for better text readability */}
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to top, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 40%, transparent) 60%, transparent 100%)",
+            background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.15) 100%)",
             pointerEvents: "none",
           }}
         />
-        {/* Zoom hint */}
+
+        {/* Zoom button */}
         <button
           onClick={() => setLightbox(activeImg)}
           style={{
             position: "absolute",
             top: "1.25rem",
             right: "1.25rem",
-            width: 42,
-            height: 42,
-            borderRadius: "50%",
-            background: "rgba(0,0,0,0.45)",
-            backdropFilter: "blur(6px)",
-            border: "none",
+            width: 40,
+            height: 40,
+            borderRadius: "0.75rem",
+            background: "rgba(255,255,255,0.15)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(255,255,255,0.25)",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "#fff",
             zIndex: 5,
-            transition: "background 0.2s",
+            transition: "all 0.2s",
           }}
           aria-label="View gallery"
         >
-          <ZoomIn size={20} />
+          <ZoomIn size={18} />
         </button>
-        {/* Text Overlay */}
+
+        {/* Hero Text — always white for clarity on dark overlay */}
         <div
           className="container-custom"
           style={{
             position: "absolute",
-            bottom: "2.5rem",
+            bottom: "2rem",
             left: "50%",
             transform: "translateX(-50%)",
             width: "100%",
           }}
         >
-          <span className="tag" style={{ marginBottom: "0.75rem", display: "inline-block" }}>
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: "0.7rem",
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "#fff",
+              border: "1px solid rgba(255,255,255,0.4)",
+              borderRadius: "999px",
+              padding: "0.25rem 0.75rem",
+              marginBottom: "0.75rem",
+              backdropFilter: "blur(4px)",
+              background: "rgba(255,255,255,0.1)",
+            }}
+          >
             {pkg.category}
           </span>
           <h1
@@ -141,25 +176,34 @@ export default function PackageDetailPage({
               fontFamily: "var(--font-outfit)",
               fontWeight: 900,
               fontSize: "clamp(1.75rem, 4vw, 3rem)",
-              color: "var(--color-text)",
-              marginBottom: "0.5rem",
+              color: "#fff",
+              marginBottom: "0.75rem",
+              textShadow: "0 2px 12px rgba(0,0,0,0.3)",
             }}
           >
             {pkg.name}
           </h1>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem", alignItems: "center" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: "var(--color-muted)", fontSize: "0.9rem" }}>
-              <MapPin size={15} color="var(--color-terracotta)" /> {pkg.destination}
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: "var(--color-muted)", fontSize: "0.9rem" }}>
-              <Clock size={15} color="var(--color-sage)" /> {pkg.duration}
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: "var(--color-muted)", fontSize: "0.9rem" }}>
-              <Users size={15} color="var(--color-sage)" /> {pkg.groupSize}
-            </span>
-            <span style={{ display: "flex", alignItems: "center", gap: "0.4rem", color: "var(--color-terracotta)", fontSize: "0.9rem", fontWeight: 600 }}>
-              <Star size={15} fill="var(--color-terracotta)" /> {pkg.rating} ({pkg.reviews} reviews)
-            </span>
+            {[
+              { icon: <MapPin size={15} />, text: pkg.destination },
+              { icon: <Clock size={15} />, text: pkg.duration },
+              { icon: <Users size={15} />, text: pkg.groupSize },
+              { icon: <Star size={15} fill="#fff" />, text: `${pkg.rating} (${pkg.reviews} reviews)` },
+            ].map((item, i) => (
+              <span
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  color: "rgba(255,255,255,0.9)",
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                }}
+              >
+                {item.icon} {item.text}
+              </span>
+            ))}
           </div>
         </div>
       </section>
@@ -167,26 +211,28 @@ export default function PackageDetailPage({
       {/* ─── GALLERY THUMBNAILS ─── */}
       <div
         style={{
-          background: "var(--color-surface)",
+          background: "var(--color-bg)",
           borderBottom: "1px solid var(--color-border)",
-          padding: "1rem 0",
+          padding: "0.875rem 0",
         }}
       >
-        <div className="container-custom" style={{ display: "flex", gap: "0.75rem", overflowX: "auto" }}>
+        <div className="container-custom" style={{ display: "flex", gap: "0.5rem", overflowX: "auto" }}>
           {pkg.gallery.map((img, i) => (
             <button
               key={i}
-              onClick={() => { setActiveImg(i); setLightbox(i); }}
+              onClick={() => { setActiveImg(i); }}
               style={{
                 flexShrink: 0,
-                width: "90px",
-                height: "65px",
+                width: "80px",
+                height: "56px",
                 borderRadius: "0.5rem",
                 overflow: "hidden",
-                border: activeImg === i ? "2px solid var(--color-terracotta)" : "2px solid transparent",
+                border: activeImg === i ? "2px solid var(--color-terracotta)" : "2px solid var(--color-border)",
                 cursor: "pointer",
                 padding: 0,
-                transition: "border-color 0.2s ease",
+                transition: "all 0.2s ease",
+                opacity: activeImg === i ? 1 : 0.6,
+                background: "none",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -196,191 +242,327 @@ export default function PackageDetailPage({
         </div>
       </div>
 
+      {/* ─── NAVIGATION TABS ─── */}
+      <div
+        style={{
+          background: "var(--color-bg)",
+          borderBottom: "1px solid var(--color-border)",
+          position: "sticky",
+          top: "64px",
+          zIndex: 40,
+        }}
+      >
+        <div className="container-custom" style={{ display: "flex", gap: 0 }}>
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              style={{
+                background: "none",
+                border: "none",
+                borderBottom: activeTab === tab.key ? "2px solid var(--color-terracotta)" : "2px solid transparent",
+                color: activeTab === tab.key ? "var(--color-terracotta)" : "var(--color-muted)",
+                fontFamily: "var(--font-outfit)",
+                fontWeight: 600,
+                fontSize: "0.9rem",
+                padding: "0.875rem 1.5rem",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* ─── MAIN CONTENT ─── */}
-      <main className="section-padding">
+      <main style={{ padding: "2.5rem 0 4rem" }}>
         <div
-          className="container-custom"
+          className="container-custom pkg-layout"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 360px",
-            gap: "3rem",
+            gridTemplateColumns: "1fr 340px",
+            gap: "2.5rem",
             alignItems: "start",
           }}
         >
           {/* LEFT COLUMN */}
           <div>
-            {/* Overview */}
-            <div style={{ marginBottom: "3rem" }}>
-              <h2 style={sectionHeading}>Overview</h2>
-              <p style={{ color: "var(--color-muted)", lineHeight: 1.8, fontSize: "0.975rem" }}>
-                {pkg.overview}
-              </p>
+            {/* ── OVERVIEW TAB ── */}
+            {activeTab === "overview" && (
+              <div style={{ animation: "pkgFadeIn 0.3s ease" }}>
+                {/* Overview text */}
+                <p style={{ color: "var(--color-muted)", lineHeight: 1.85, fontSize: "0.975rem", marginBottom: "1.75rem" }}>
+                  {pkg.overview}
+                </p>
 
-              {/* Highlights */}
-              <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
-                {pkg.highlights.map((h) => (
-                  <span
-                    key={h}
-                    style={{
-                      background: "rgba(192,92,58,0.08)",
-                      border: "1px solid rgba(192,92,58,0.2)",
-                      color: "var(--color-terracotta)",
-                      borderRadius: "999px",
-                      padding: "0.35rem 0.85rem",
-                      fontSize: "0.8rem",
-                      fontWeight: 500,
-                    }}
-                  >
-                    ✓ {h}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Itinerary Accordion */}
-            <div style={{ marginBottom: "3rem" }}>
-              <h2 style={sectionHeading}>Day-by-Day Itinerary</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                {pkg.itinerary.map((item, i) => (
-                  <div
-                    key={item.day}
-                    className="glass"
-                    style={{ overflow: "hidden", borderRadius: "0.875rem" }}
-                  >
-                    <button
-                      id={`itinerary-day-${item.day}`}
-                      onClick={() => setOpenDay(openDay === i ? null : i)}
+                {/* Highlights */}
+                <h3 style={{ ...sectionLabel, marginBottom: "1rem" }}>Trip Highlights</h3>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "2.5rem" }}>
+                  {pkg.highlights.map((h) => (
+                    <span
+                      key={h}
                       style={{
-                        width: "100%",
-                        background: "none",
-                        border: "none",
+                        background: "var(--color-surface)",
+                        border: "1px solid var(--color-border)",
+                        color: "var(--color-text)",
+                        borderRadius: "0.5rem",
+                        padding: "0.4rem 0.85rem",
+                        fontSize: "0.825rem",
+                        fontWeight: 500,
                         display: "flex",
-                        justifyContent: "space-between",
                         alignItems: "center",
-                        padding: "1.1rem 1.25rem",
-                        cursor: "pointer",
-                        gap: "1rem",
+                        gap: "0.35rem",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <span
-                          style={{
-                            background: "linear-gradient(135deg, var(--color-terracotta), var(--color-sunset))",
-                            color: "white",
-                            fontFamily: "var(--font-outfit)",
-                            fontWeight: 700,
-                            fontSize: "0.75rem",
-                            borderRadius: "999px",
-                            padding: "0.2rem 0.75rem",
-                            flexShrink: 0,
-                          }}
-                        >
-                          Day {item.day}
-                        </span>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-outfit)",
-                            fontWeight: 600,
-                            fontSize: "0.975rem",
-                            color: "var(--color-text)",
-                            textAlign: "left",
-                          }}
-                        >
-                          {item.title}
-                        </span>
-                      </div>
-                      {openDay === i ? (
-                        <ChevronUp size={18} style={{ color: "var(--color-muted)", flexShrink: 0 }} />
-                      ) : (
-                        <ChevronDown size={18} style={{ color: "var(--color-muted)", flexShrink: 0 }} />
-                      )}
-                    </button>
-                    {openDay === i && (
-                      <div style={{ padding: "0 1.25rem 1.1rem", color: "var(--color-muted)", fontSize: "0.9rem", lineHeight: 1.7 }}>
-                        {item.description}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+                      <span style={{ color: "var(--color-terracotta)" }}>✓</span> {h}
+                    </span>
+                  ))}
+                </div>
 
-            {/* Inclusions & Exclusions */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "1.5rem",
-                marginBottom: "3rem",
-              }}
-            >
-              <div style={{ background: "rgba(122,158,126,0.07)", border: "1px solid rgba(122,158,126,0.2)", borderRadius: "1rem", padding: "1.5rem" }}>
-                <h3
+                {/* Quick stats row */}
+                <div
+                  className="pkg-quick-stats"
                   style={{
-                    fontFamily: "var(--font-outfit)",
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    color: "#a8c5ab",
-                    marginBottom: "1.25rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: "1rem",
+                    marginBottom: "2rem",
                   }}
                 >
-                  <CheckCircle size={17} /> Inclusions
-                </h3>
-                {pkg.inclusions.map((item) => (
-                  <div key={item} style={{ display: "flex", gap: "0.6rem", marginBottom: "0.75rem", fontSize: "0.875rem", color: "var(--color-muted)" }}>
-                    <span style={{ color: "var(--color-terracotta)", flexShrink: 0 }}>✓</span>
-                    {item}
-                  </div>
-                ))}
+                  {[
+                    { icon: <Calendar size={20} style={{ color: "var(--color-terracotta)" }} />, label: "Duration", value: pkg.duration },
+                    { icon: <Users size={20} style={{ color: "var(--color-terracotta)" }} />, label: "Group Size", value: pkg.groupSize },
+                    { icon: <Shield size={20} style={{ color: "var(--color-terracotta)" }} />, label: "Rating", value: `${pkg.rating}★ (${pkg.reviews})` },
+                  ].map((stat) => (
+                    <div
+                      key={stat.label}
+                      style={{
+                        background: "var(--color-surface)",
+                        border: "1px solid var(--color-border)",
+                        borderRadius: "0.875rem",
+                        padding: "1.25rem",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ marginBottom: "0.5rem", display: "flex", justifyContent: "center" }}>{stat.icon}</div>
+                      <div style={{ fontSize: "0.7rem", color: "var(--color-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>{stat.label}</div>
+                      <div style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "0.925rem", color: "var(--color-text)" }}>{stat.value}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div style={{ background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.15)", borderRadius: "1rem", padding: "1.5rem" }}>
-                <h3
+            )}
+
+            {/* ── ITINERARY TAB ── */}
+            {activeTab === "itinerary" && (
+              <div style={{ animation: "pkgFadeIn 0.3s ease" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+                  {pkg.itinerary.map((item, i) => (
+                    <div
+                      key={item.day}
+                      style={{
+                        background: "var(--color-surface)",
+                        border: "1px solid var(--color-border)",
+                        overflow: "hidden",
+                        borderRadius: "0.875rem",
+                        transition: "border-color 0.2s",
+                        ...(openDay === i ? { borderColor: "var(--color-terracotta)" } : {}),
+                      }}
+                    >
+                      <button
+                        onClick={() => setOpenDay(openDay === i ? null : i)}
+                        style={{
+                          width: "100%",
+                          background: "none",
+                          border: "none",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "1rem 1.25rem",
+                          cursor: "pointer",
+                          gap: "1rem",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.875rem" }}>
+                          <span
+                            style={{
+                              background: openDay === i
+                                ? "linear-gradient(135deg, var(--color-terracotta), var(--color-sunset))"
+                                : "var(--color-border)",
+                              color: openDay === i ? "white" : "var(--color-muted)",
+                              fontFamily: "var(--font-outfit)",
+                              fontWeight: 700,
+                              fontSize: "0.7rem",
+                              borderRadius: "0.5rem",
+                              padding: "0.3rem 0.7rem",
+                              flexShrink: 0,
+                              minWidth: "50px",
+                              textAlign: "center",
+                              transition: "all 0.2s",
+                            }}
+                          >
+                            Day {item.day}
+                          </span>
+                          <span
+                            style={{
+                              fontFamily: "var(--font-outfit)",
+                              fontWeight: 600,
+                              fontSize: "0.95rem",
+                              color: "var(--color-text)",
+                              textAlign: "left",
+                            }}
+                          >
+                            {item.title}
+                          </span>
+                        </div>
+                        {openDay === i ? (
+                          <ChevronUp size={18} style={{ color: "var(--color-terracotta)", flexShrink: 0 }} />
+                        ) : (
+                          <ChevronDown size={18} style={{ color: "var(--color-muted)", flexShrink: 0 }} />
+                        )}
+                      </button>
+                      {openDay === i && (
+                        <div
+                          style={{
+                            padding: "0 1.25rem 1.1rem 4.25rem",
+                            color: "var(--color-muted)",
+                            fontSize: "0.9rem",
+                            lineHeight: 1.75,
+                            borderTop: "1px solid var(--color-border)",
+                            paddingTop: "0.875rem",
+                          }}
+                        >
+                          {item.description}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── DETAILS TAB (Inclusions / Exclusions) ── */}
+            {activeTab === "details" && (
+              <div style={{ animation: "pkgFadeIn 0.3s ease" }}>
+                <div
+                  className="incl-excl-grid"
                   style={{
-                    fontFamily: "var(--font-outfit)",
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    color: "#f87171",
-                    marginBottom: "1.25rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "1.25rem",
                   }}
                 >
-                  <XCircle size={17} /> Exclusions
-                </h3>
-                {pkg.exclusions.map((item) => (
-                  <div key={item} style={{ display: "flex", gap: "0.6rem", marginBottom: "0.75rem", fontSize: "0.875rem", color: "var(--color-muted)" }}>
-                    <span style={{ color: "#f87171", flexShrink: 0 }}>✕</span>
-                    {item}
+                  {/* Inclusions */}
+                  <div
+                    style={{
+                      background: "var(--color-surface)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "0.875rem",
+                      padding: "1.5rem",
+                    }}
+                  >
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-outfit)",
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        color: "var(--color-sage)",
+                        marginBottom: "1.25rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                      }}
+                    >
+                      <CheckCircle size={17} /> What&apos;s Included
+                    </h3>
+                    {pkg.inclusions.map((item) => (
+                      <div
+                        key={item}
+                        style={{
+                          display: "flex",
+                          gap: "0.6rem",
+                          marginBottom: "0.75rem",
+                          fontSize: "0.85rem",
+                          color: "var(--color-muted)",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        <span style={{ color: "var(--color-sage)", flexShrink: 0, fontWeight: 600 }}>✓</span>
+                        {item}
+                      </div>
+                    ))}
                   </div>
-                ))}
+
+                  {/* Exclusions */}
+                  <div
+                    style={{
+                      background: "var(--color-surface)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "0.875rem",
+                      padding: "1.5rem",
+                    }}
+                  >
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-outfit)",
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        color: "var(--color-muted)",
+                        marginBottom: "1.25rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                      }}
+                    >
+                      <XCircle size={17} /> Not Included
+                    </h3>
+                    {pkg.exclusions.map((item) => (
+                      <div
+                        key={item}
+                        style={{
+                          display: "flex",
+                          gap: "0.6rem",
+                          marginBottom: "0.75rem",
+                          fontSize: "0.85rem",
+                          color: "var(--color-muted)",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        <span style={{ color: "var(--color-muted)", flexShrink: 0 }}>✕</span>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* RIGHT COLUMN – Sticky Sidebar */}
-          <div style={{ position: "sticky", top: "90px" }}>
+          {/* RIGHT COLUMN – Sticky Booking Sidebar */}
+          <div style={{ position: "sticky", top: "120px" }}>
             <div
-              className="glass"
-              style={{ borderRadius: "1.25rem", padding: "1.75rem" }}
+              style={{
+                background: "var(--color-card)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "1rem",
+                padding: "1.5rem",
+                boxShadow: "0 2px 12px var(--color-card-shadow)",
+              }}
             >
               {/* Price */}
-              <div style={{ marginBottom: "1.5rem" }}>
-                <span style={{ color: "var(--color-muted)", fontSize: "0.8rem" }}>Starting from</span>
+              <div style={{ marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid var(--color-border)" }}>
+                <span style={{ color: "var(--color-muted)", fontSize: "0.775rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Starting from</span>
                 <div
                   style={{
                     fontFamily: "var(--font-outfit)",
-                    fontWeight: 900,
-                    fontSize: "2.25rem",
-                    background: "linear-gradient(135deg, var(--color-terracotta), var(--color-sunset))",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
+                    fontWeight: 800,
+                    fontSize: "2rem",
+                    color: "var(--color-terracotta)",
                     lineHeight: 1.2,
-                    marginTop: "0.25rem",
+                    marginTop: "0.2rem",
                   }}
                 >
                   {pkg.priceDisplay}
@@ -388,7 +570,6 @@ export default function PackageDetailPage({
                     style={{
                       fontSize: "0.8rem",
                       fontWeight: 400,
-                      WebkitTextFillColor: "var(--color-muted)",
                       color: "var(--color-muted)",
                     }}
                   >
@@ -397,20 +578,20 @@ export default function PackageDetailPage({
                 </div>
               </div>
 
-              {/* Quick info */}
+              {/* Quick info rows */}
               {[
                 { label: "Duration", value: pkg.duration },
                 { label: "Group Size", value: pkg.groupSize },
                 { label: "Destination", value: pkg.destination },
-              ].map((row) => (
+              ].map((row, i, arr) => (
                 <div
                   key={row.label}
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    padding: "0.7rem 0",
-                    borderBottom: "1px solid var(--color-border)",
-                    fontSize: "0.875rem",
+                    padding: "0.6rem 0",
+                    borderBottom: i < arr.length - 1 ? "1px solid var(--color-border)" : "none",
+                    fontSize: "0.85rem",
                   }}
                 >
                   <span style={{ color: "var(--color-muted)" }}>{row.label}</span>
@@ -421,7 +602,7 @@ export default function PackageDetailPage({
               ))}
 
               {/* CTA buttons */}
-              <div style={{ marginTop: "1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div style={{ marginTop: "1.25rem", display: "flex", flexDirection: "column", gap: "0.625rem" }}>
                 <Link
                   href={`/book?package=${pkg.slug}`}
                   className="btn-primary"
@@ -429,28 +610,53 @@ export default function PackageDetailPage({
                 >
                   Book Now – ₹{pkg.price.toLocaleString("en-IN")}/person
                 </Link>
-                <button id="enquire-now-btn" className="btn-secondary" style={{ justifyContent: "center" }} onClick={() => setShowForm((v) => !v)}>
+                <button
+                  className="btn-secondary"
+                  style={{ justifyContent: "center" }}
+                  onClick={() => setShowForm((v) => !v)}
+                >
                   {showForm ? "Hide Form" : "Enquire Now"}
                 </button>
                 <a
                   href={`https://wa.me/917354177879?text=Hi!%20I%27m%20interested%20in%20the%20${encodeURIComponent(pkg.name)}%20package.%20Please%20share%20more%20details.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-secondary"
-                  style={{ justifyContent: "center", textAlign: "center" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                    background: "none",
+                    border: "1px solid var(--color-border)",
+                    borderRadius: "999px",
+                    padding: "0.65rem 1rem",
+                    fontFamily: "var(--font-outfit)",
+                    fontWeight: 600,
+                    fontSize: "0.875rem",
+                    color: "#25D366",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    transition: "all 0.2s",
+                  }}
                 >
                   <MessageCircle size={16} fill="#25D366" color="#25D366" /> Chat on WhatsApp
                 </a>
               </div>
             </div>
 
-            {/* Inline form */}
+            {/* Inline inquiry form */}
             {showForm && (
               <div
-                className="glass"
-                style={{ borderRadius: "1.25rem", padding: "1.75rem", marginTop: "1.25rem" }}
+                style={{
+                  background: "var(--color-card)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "1rem",
+                  padding: "1.5rem",
+                  marginTop: "1rem",
+                  boxShadow: "0 2px 12px var(--color-card-shadow)",
+                }}
               >
-                <h3 style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1.1rem", color: "var(--color-text)", marginBottom: "1.25rem" }}>
+                <h3 style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1rem", color: "var(--color-text)", marginBottom: "1rem" }}>
                   Quick Inquiry
                 </h3>
                 <InquiryForm prefilledDestination={pkg.destination} />
@@ -478,7 +684,7 @@ export default function PackageDetailPage({
             position: "fixed",
             inset: 0,
             zIndex: 9999,
-            background: "rgba(0,0,0,0.92)",
+            background: "rgba(0,0,0,0.95)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -492,13 +698,13 @@ export default function PackageDetailPage({
             onClick={() => setLightbox(null)}
             style={{
               position: "absolute",
-              top: "1.25rem",
-              right: "1.25rem",
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.12)",
-              border: "none",
+              top: "1rem",
+              right: "1rem",
+              width: 42,
+              height: 42,
+              borderRadius: "0.75rem",
+              background: "rgba(255,255,255,0.1)",
+              border: "1px solid rgba(255,255,255,0.15)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -509,20 +715,20 @@ export default function PackageDetailPage({
             }}
             aria-label="Close gallery"
           >
-            <X size={22} />
+            <X size={20} />
           </button>
 
           {/* Counter */}
           <div
             style={{
               position: "absolute",
-              top: "1.5rem",
+              top: "1.25rem",
               left: "50%",
               transform: "translateX(-50%)",
-              color: "rgba(255,255,255,0.7)",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              letterSpacing: "0.05em",
+              color: "rgba(255,255,255,0.6)",
+              fontSize: "0.8rem",
+              fontWeight: 500,
+              letterSpacing: "0.08em",
             }}
           >
             {lightbox + 1} / {pkg.gallery.length}
@@ -540,11 +746,11 @@ export default function PackageDetailPage({
                 left: "1rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.1)",
-                border: "none",
+                width: 44,
+                height: 44,
+                borderRadius: "0.75rem",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.12)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -555,7 +761,7 @@ export default function PackageDetailPage({
               }}
               aria-label="Previous image"
             >
-              <ChevronLeft size={26} />
+              <ChevronLeft size={24} />
             </button>
           )}
 
@@ -571,11 +777,11 @@ export default function PackageDetailPage({
                 right: "1rem",
                 top: "50%",
                 transform: "translateY(-50%)",
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.1)",
-                border: "none",
+                width: 44,
+                height: 44,
+                borderRadius: "0.75rem",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.12)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -586,7 +792,7 @@ export default function PackageDetailPage({
               }}
               aria-label="Next image"
             >
-              <ChevronRight size={26} />
+              <ChevronRight size={24} />
             </button>
           )}
 
@@ -611,8 +817,8 @@ export default function PackageDetailPage({
             onClick={(e) => e.stopPropagation()}
             style={{
               display: "flex",
-              gap: "0.5rem",
-              marginTop: "1.25rem",
+              gap: "0.4rem",
+              marginTop: "1rem",
               overflowX: "auto",
               maxWidth: "90vw",
               padding: "0.25rem",
@@ -624,12 +830,12 @@ export default function PackageDetailPage({
                 onClick={() => setLightbox(i)}
                 style={{
                   flexShrink: 0,
-                  width: 64,
-                  height: 48,
+                  width: 60,
+                  height: 44,
                   borderRadius: "0.4rem",
                   overflow: "hidden",
                   border: lightbox === i ? "2px solid #fff" : "2px solid transparent",
-                  opacity: lightbox === i ? 1 : 0.5,
+                  opacity: lightbox === i ? 1 : 0.45,
                   cursor: "pointer",
                   padding: 0,
                   transition: "all 0.2s ease",
@@ -647,17 +853,25 @@ export default function PackageDetailPage({
       <style>{`
         @keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes lbZoomIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pkgFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 900px) {
-          main > .container-custom {
+          .pkg-layout {
             grid-template-columns: 1fr !important;
           }
-          [style*="position: sticky"] {
+          .pkg-layout > div:last-child {
             position: static !important;
           }
         }
         @media (max-width: 600px) {
-          [style*="grid-template-columns: 1fr 1fr"] {
+          .incl-excl-grid {
             grid-template-columns: 1fr !important;
+          }
+          .pkg-quick-stats {
+            grid-template-columns: 1fr !important;
+          }
+          section[style*="height: 60vh"] {
+            height: 45vh !important;
+            min-height: 300px !important;
           }
         }
       `}</style>
@@ -665,12 +879,11 @@ export default function PackageDetailPage({
   );
 }
 
-const sectionHeading: React.CSSProperties = {
+const sectionLabel: React.CSSProperties = {
   fontFamily: "var(--font-outfit)",
-  fontWeight: 800,
-  fontSize: "1.4rem",
-  color: "var(--color-text)",
-  marginBottom: "1.25rem",
-  paddingBottom: "0.75rem",
-  borderBottom: "2px solid var(--color-border)",
+  fontWeight: 700,
+  fontSize: "0.85rem",
+  color: "var(--color-muted)",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
 };

@@ -73,7 +73,7 @@ function PackagesContent() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
             gap: "1.5rem",
           }}
         >
@@ -95,8 +95,8 @@ export default function PackagesPage() {
       <section
         style={{
           background: "linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-light) 100%)",
-          paddingTop: "8rem",
-          paddingBottom: "3rem",
+          paddingTop: "clamp(6rem, 12vw, 8rem)",
+          paddingBottom: "2rem",
         }}
       >
         <div className="container-custom">

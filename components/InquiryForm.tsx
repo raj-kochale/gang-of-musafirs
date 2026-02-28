@@ -145,7 +145,7 @@ export default function InquiryForm({ prefilledDestination }: Props) {
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
       {/* Name & Phone */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+      <div className="inquiry-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
         <div>
           <label style={labelStyle}>Full Name *</label>
           <input
@@ -180,7 +180,7 @@ export default function InquiryForm({ prefilledDestination }: Props) {
       </div>
 
       {/* Email & Destination */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+      <div className="inquiry-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
         <div>
           <label style={labelStyle}>Email Address *</label>
           <input
@@ -212,7 +212,7 @@ export default function InquiryForm({ prefilledDestination }: Props) {
       </div>
 
       {/* Date & Travelers */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+      <div className="inquiry-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
         <div>
           <label style={labelStyle}>Preferred Travel Date *</label>
           <input
@@ -309,7 +309,14 @@ export default function InquiryForm({ prefilledDestination }: Props) {
         ✅ We respond within 1 hour · No spam, ever
       </p>
 
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @media (max-width: 600px) {
+          .inquiry-row {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </form>
   );
 }

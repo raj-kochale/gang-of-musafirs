@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Star, Quote } from "lucide-react";
 
 type Props = {
@@ -17,7 +18,7 @@ export default function TestimonialCard({ name, avatar, trip, quote, rating, loc
       className="glass"
       style={{
         padding: "1.75rem",
-        minWidth: "320px",
+        minWidth: "280px",
         maxWidth: "360px",
         flexShrink: 0,
         display: "flex",
@@ -62,13 +63,13 @@ export default function TestimonialCard({ name, avatar, trip, quote, rating, loc
 
       {/* Author */}
       <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={avatar}
           alt={name}
+          width={42}
+          height={42}
+          unoptimized
           style={{
-            width: "42px",
-            height: "42px",
             borderRadius: "50%",
             border: "2px solid var(--color-terracotta)",
             objectFit: "cover",

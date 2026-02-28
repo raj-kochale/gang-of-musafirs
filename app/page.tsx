@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -87,8 +88,8 @@ export default function HomePage() {
           style={{
             position: "relative",
             zIndex: 2,
-            paddingTop: "8rem",
-            paddingBottom: "6rem",
+            paddingTop: "clamp(5.5rem, 12vw, 8rem)",
+            paddingBottom: "clamp(3rem, 8vw, 6rem)",
           }}
         >
           <div style={{ maxWidth: "780px" }}>
@@ -198,11 +199,12 @@ export default function HomePage() {
                       background: "var(--color-card)",
                     }}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={`https://api.dicebear.com/7.x/notionists/svg?seed=traveler${n}`}
                       alt="traveler"
-                      style={{ width: "100%", height: "100%" }}
+                      width={40}
+                      height={40}
+                      unoptimized
                     />
                   </div>
                 ))}
@@ -293,8 +295,8 @@ export default function HomePage() {
           className="container-custom"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-            gap: "2rem",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(140px, 45%), 1fr))",
+            gap: "1.25rem",
           }}
         >
           {stats.map((stat, i) => (
@@ -383,7 +385,7 @@ export default function HomePage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
               gap: "1.5rem",
             }}
           >
@@ -431,7 +433,7 @@ export default function HomePage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(220px, 100%), 1fr))",
               gap: "1.25rem",
             }}
           >
@@ -550,7 +552,7 @@ export default function HomePage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))",
               gap: "1.5rem",
             }}
           >
@@ -625,8 +627,8 @@ export default function HomePage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-              gap: "2rem",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
+              gap: "1.5rem",
             }}
           >
             {[

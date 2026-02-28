@@ -385,6 +385,63 @@ h6 {
   }
 }
 
+/* ── Mobile Responsive Overrides ── */
+
+/* Medium devices (tablets, landscape phones) */
+@media (max-width: 900px) {
+  .grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Small devices (phones) */
+@media (max-width: 768px) {
+  /* Hero padding adjustments */
+  section[id="hero"] .container-custom {
+    padding-top: 6rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  /* Stats bar: 2-column on small screens */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+
+  /* Cards and grid items should flow naturally */
+  .whatsapp-float {
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* Extra-small phones */
+@media (max-width: 480px) {
+  .container-custom {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+  }
+
+  .section-padding {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  /* Buttons should not overflow */
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.875rem;
+    padding: 0.65rem 1.25rem;
+  }
+
+  /* Testimonial cards adapt */
+  .glass {
+    border-radius: 0.875rem;
+  }
+}
+
 /* Smooth focus styles for accessibility */
 a:focus-visible,
 button:focus-visible,

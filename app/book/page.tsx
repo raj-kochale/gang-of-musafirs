@@ -406,8 +406,8 @@ function BookContent() {
                 style={{
                     background:
                         "linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-light) 100%)",
-                    paddingTop: "7rem",
-                    paddingBottom: "2.5rem",
+                    paddingTop: "clamp(5.5rem, 12vw, 7rem)",
+                    paddingBottom: "2rem",
                 }}
             >
                 <div className="container-custom">
@@ -503,7 +503,7 @@ function BookContent() {
                                 </Field>
 
                                 {/* Email + Phone */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                                <div className="book-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                                     <Field label="Email *" icon={<Mail size={15} />}>
                                         <input
                                             className="input-field"
@@ -530,7 +530,7 @@ function BookContent() {
                                 </div>
 
                                 {/* Travelers + Date */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                                <div className="book-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                                     <Field label="No. of Travelers *" icon={<Users size={15} />}>
                                         <input
                                             className="input-field"
@@ -760,6 +760,14 @@ function BookContent() {
                 @media (max-width: 900px) {
                     main > .container-custom {
                         grid-template-columns: 1fr !important;
+                    }
+                }
+                @media (max-width: 600px) {
+                    .book-form-row {
+                        grid-template-columns: 1fr !important;
+                    }
+                    main .glass {
+                        padding: 1.25rem !important;
                     }
                 }
             `}</style>

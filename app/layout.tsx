@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Explore India like never before with GangOfMusafirs. Curated group trips to Hill Stations, Beaches, Adventure & Cultural destinations. Book your next adventure today!",
   keywords:
     "group travel India, curated trips, travel agency, hill stations, beach trips, adventure travel, GangOfMusafirs, off the beaten path, Manali, Goa, Rishikesh, Rajasthan",
-  metadataBase: new URL("https://gangofmusafirs.in"),
+  metadataBase: new URL("https://www.gangofmusafirs.online"),
   openGraph: {
     title: "GangOfMusafirs – Curated Travel Experiences Across India",
     description:
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "GangOfMusafirs",
     locale: "en_IN",
+    url: "https://www.gangofmusafirs.online",
   },
   twitter: {
     card: "summary_large_image",

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Clock, Users, ArrowRight, Star } from "lucide-react";
 import { Package } from "@/lib/data";
 
@@ -44,13 +45,12 @@ export default function PackageCard({ pkg }: Props) {
             overflow: "hidden",
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={pkg.coverImage}
             alt={pkg.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{
-              width: "100%",
-              height: "100%",
               objectFit: "cover",
               transition: "transform 0.5s ease",
             }}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 
 type Props = {
@@ -43,14 +44,13 @@ export default function BlogCard({ post }: Props) {
                 }}
             >
                 {post.coverImage && (
-                    <div style={{ height: "200px", overflow: "hidden" }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                    <div style={{ height: "200px", overflow: "hidden", position: "relative" }}>
+                        <Image
                             src={post.coverImage}
                             alt={post.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             style={{
-                                width: "100%",
-                                height: "100%",
                                 objectFit: "cover",
                                 transition: "transform 0.5s ease",
                             }}

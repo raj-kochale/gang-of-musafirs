@@ -52,8 +52,8 @@ export default function ContactPage() {
       <section
         style={{
           background: "linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-light) 100%)",
-          paddingTop: "8rem",
-          paddingBottom: "3rem",
+          paddingTop: "clamp(6rem, 12vw, 8rem)",
+          paddingBottom: "2rem",
         }}
       >
         <div className="container-custom">
@@ -241,6 +241,11 @@ export default function ContactPage() {
         @media (max-width: 900px) {
           main > .container-custom {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 600px) {
+          main .glass {
+            padding: 1.5rem !important;
           }
         }
       `}</style>

@@ -31,8 +31,8 @@ export default async function BlogPage() {
                 style={{
                     background:
                         "linear-gradient(135deg, var(--color-bg) 0%, var(--color-primary-light) 100%)",
-                    paddingTop: "8rem",
-                    paddingBottom: "3rem",
+                    paddingTop: "clamp(6rem, 12vw, 8rem)",
+                    paddingBottom: "2rem",
                 }}
             >
                 <div className="container-custom">
@@ -108,7 +108,7 @@ export default async function BlogPage() {
                             style={{
                                 display: "grid",
                                 gridTemplateColumns:
-                                    "repeat(auto-fill, minmax(320px, 1fr))",
+                                    "repeat(auto-fill, minmax(min(300px, 100%), 1fr))",
                                 gap: "1.5rem",
                             }}
                         >

@@ -147,7 +147,7 @@ async function sendBookingConfirmation(booking: any) {
         <tr><td style="padding: 6px 0; font-weight: 600;">Payment ID</td><td style="font-size: 12px;">${booking.razorpayPaymentId}</td></tr>
         ${booking.specialRequests ? `<tr><td style="padding: 6px 0; font-weight: 600;">Special Requests</td><td>${booking.specialRequests}</td></tr>` : ""}
       </table>
-      <p style="font-size: 12px; color: #7A6A5E; margin-top: 16px;">Booking received via gangofmusafirs.in</p>
+      <p style="font-size: 12px; color: #7A6A5E; margin-top: 16px;">Booking received via gangofmusafirs.online</p>
     </div>`;
 
     await Promise.all([

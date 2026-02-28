@@ -627,7 +627,7 @@ export default function AdminDashboard() {
                                 </FormField>
 
                                 {/* Row: Category + Destination */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                                <div className="admin-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                                     <FormField label="Category *">
                                         <select
                                             className="input-field"
@@ -650,7 +650,7 @@ export default function AdminDashboard() {
                                 </div>
 
                                 {/* Row: Duration + Group Size */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                                <div className="admin-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                                     <FormField label="Duration">
                                         <input
                                             className="input-field"
@@ -670,7 +670,7 @@ export default function AdminDashboard() {
                                 </div>
 
                                 {/* Row: Price + Price Display */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                                <div className="admin-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                                     <FormField label="Price (₹) *">
                                         <input
                                             className="input-field"
@@ -848,7 +848,7 @@ export default function AdminDashboard() {
                                 />
 
                                 {/* Row: Rating + Reviews */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                                <div className="admin-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                                     <FormField label="Rating">
                                         <input
                                             className="input-field"
@@ -907,6 +907,11 @@ export default function AdminDashboard() {
                 }
                 .animate-spin {
                     animation: spin 1s linear infinite;
+                }
+                @media (max-width: 600px) {
+                    .admin-form-row {
+                        grid-template-columns: 1fr !important;
+                    }
                 }
             `}</style>
         </div>

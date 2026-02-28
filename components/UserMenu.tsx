@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { LogOut, User } from "lucide-react";
 
@@ -93,13 +94,12 @@ export default function UserMenu() {
         }}
       >
         {session.user?.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={session.user.image}
             alt={name}
+            width={36}
+            height={36}
             style={{
-              width: "36px",
-              height: "36px",
               borderRadius: "50%",
               border: "2px solid var(--color-border)",
               objectFit: "cover",

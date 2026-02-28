@@ -56,7 +56,7 @@ async function sendEmailNotification(data: {
         ${data.message ? `<tr><td style="padding: 8px 0; font-weight: 600;">Message</td><td>${data.message}</td></tr>` : ""}
       </table>
       <hr style="border: none; border-top: 1px solid #EADDD5; margin: 16px 0;" />
-      <p style="font-size: 12px; color: #7A6A5E;">This inquiry was submitted via gangofmusafirs.in</p>
+      <p style="font-size: 12px; color: #7A6A5E;">This inquiry was submitted via gangofmusafirs.online</p>
     </div>`;
 
     await transporter.sendMail({
