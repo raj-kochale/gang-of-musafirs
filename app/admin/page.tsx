@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import AdminNav from "@/components/AdminNav";
+import ImageUpload, { GalleryUpload } from "@/components/ImageUpload";
 
 /* ───── Types ───── */
 type ItineraryItem = { day: number; title: string; description: string };
@@ -703,28 +704,16 @@ export default function AdminDashboard() {
                                 </FormField>
 
                                 {/* Cover Image */}
-                                <FormField label="Cover Image URL">
-                                    <input
-                                        className="input-field"
-                                        value={form.coverImage}
-                                        onChange={(e) => setForm((f) => ({ ...f, coverImage: e.target.value }))}
-                                        placeholder="https://images.unsplash.com/..."
-                                    />
-                                    {form.coverImage && (
-                                        <div style={{ marginTop: "0.5rem", borderRadius: "0.5rem", overflow: "hidden", height: 120 }}>
-                                            <img src={form.coverImage} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                        </div>
-                                    )}
-                                </FormField>
+                                <ImageUpload
+                                    label="Cover Image"
+                                    value={form.coverImage}
+                                    onChange={(url) => setForm((f) => ({ ...f, coverImage: url }))}
+                                />
 
                                 {/* Gallery */}
-                                <ArrayFieldEditor
-                                    label="Gallery Images"
-                                    items={form.gallery}
-                                    placeholder="Image URL"
-                                    onAdd={() => addArrayItem("gallery")}
-                                    onUpdate={(i, v) => updateArrayItem("gallery", i, v)}
-                                    onRemove={(i) => removeArrayItem("gallery", i)}
+                                <GalleryUpload
+                                    images={form.gallery}
+                                    onChange={(urls) => setForm((f) => ({ ...f, gallery: urls }))}
                                 />
 
                                 {/* Highlights */}

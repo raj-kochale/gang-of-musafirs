@@ -15,6 +15,7 @@ import {
     EyeOff,
 } from "lucide-react";
 import AdminNav from "@/components/AdminNav";
+import ImageUpload from "@/components/ImageUpload";
 
 /* ───── Types ───── */
 type BlogPost = {
@@ -674,40 +675,16 @@ export default function AdminBlogPage() {
                                 </FormField>
 
                                 {/* Cover Image */}
-                                <FormField label="Cover Image URL">
-                                    <input
-                                        className="input-field"
-                                        value={form.coverImage}
-                                        onChange={(e) =>
-                                            setForm((f) => ({
-                                                ...f,
-                                                coverImage: e.target.value,
-                                            }))
-                                        }
-                                        placeholder="https://images.unsplash.com/..."
-                                    />
-                                    {form.coverImage && (
-                                        <div
-                                            style={{
-                                                marginTop: "0.5rem",
-                                                borderRadius: "0.5rem",
-                                                overflow: "hidden",
-                                                height: 120,
-                                            }}
-                                        >
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img
-                                                src={form.coverImage}
-                                                alt="Preview"
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%",
-                                                    objectFit: "cover",
-                                                }}
-                                            />
-                                        </div>
-                                    )}
-                                </FormField>
+                                <ImageUpload
+                                    label="Cover Image"
+                                    value={form.coverImage}
+                                    onChange={(url) =>
+                                        setForm((f) => ({
+                                            ...f,
+                                            coverImage: url,
+                                        }))
+                                    }
+                                />
 
                                 {/* Tags */}
                                 <FormField label="Tags (comma-separated)">
