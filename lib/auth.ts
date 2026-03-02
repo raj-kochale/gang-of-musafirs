@@ -6,6 +6,19 @@ import clientPromise from "./mongoClient";
 import { connectDB } from "./mongodb";
 import Otp from "./models/Otp";
 
+/** Emails that are auto-assigned the "admin" role */
+function getAdminEmails(): string[] {
+  const raw = process.env.ADMIN_EMAILS || "";
+  return raw
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isAdminEmail(email: string): boolean {
+  return getAdminEmails().includes(email.toLowerCase().trim());
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
   providers: [
@@ -59,10 +72,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           let user = await db.collection("users").findOne({ email });
 
           if (!user) {
+            const role = isAdminEmail(email) ? "admin" : "user";
             const result = await db.collection("users").insertOne({
               email,
               emailVerified: new Date(),
               name: email.split("@")[0],
+              role,
               createdAt: new Date(),
               updatedAt: new Date(),
             });
@@ -70,7 +85,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               _id: result.insertedId,
               email,
               name: email.split("@")[0],
+              role,
             };
+          } else if (!user.role) {
+            // Back-fill role for existing users
+            const role = isAdminEmail(email) ? "admin" : "user";
+            await db.collection("users").updateOne(
+              { _id: user._id },
+              { $set: { role } }
+            );
+            user.role = role;
           }
 
           return {
@@ -78,6 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: user.email as string,
             name: (user.name as string) || email.split("@")[0],
             image: (user.image as string) || null,
+            role: (user.role as "admin" | "user") || "user",
           };
         } catch (err) {
           console.error("OTP authorize error:", err);
@@ -113,7 +138,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.name = user.name;
         token.email = user.email;
         token.picture = user.image;
+        token.role = user.role ?? "user";
       }
+
+      // On first sign-in via OAuth, fetch role from DB
+      if (user && !user.role && token.email) {
+        const client = await clientPromise;
+        const db = client.db();
+        const dbUser = await db.collection("users").findOne({ email: token.email });
+        if (dbUser) {
+          if (!dbUser.role) {
+            const role = isAdminEmail(token.email) ? "admin" : "user";
+            await db.collection("users").updateOne(
+              { _id: dbUser._id },
+              { $set: { role } }
+            );
+            token.role = role;
+          } else {
+            token.role = dbUser.role as "admin" | "user";
+          }
+        }
+      }
+
       // Allow session updates (e.g. after profile change)
       if (trigger === "update" && session) {
         token.name = session.name ?? token.name;
@@ -127,6 +173,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.name = token.name as string;
         session.user.email = token.email as string;
         session.user.image = token.picture as string | null;
+        session.user.role = (token.role as "admin" | "user") || "user";
       }
       return session;
     },

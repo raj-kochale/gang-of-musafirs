@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Suspense } from "react";
 import ThemeProvider from "@/components/ThemeProvider";
 import SessionProvider from "@/components/SessionProvider";
+import PageLoader from "@/components/PageLoader";
+import RouteTransition from "@/components/RouteTransition";
 import "./globals.css";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
@@ -35,6 +38,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: "/icon.jpeg",
+    apple: "/icon.jpeg",
+  },
 };
 
 export default function RootLayout({
@@ -47,7 +54,12 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <SessionProvider>
           <ThemeProvider>
-            {children}
+            <PageLoader />
+            <Suspense>
+              <RouteTransition>
+                {children}
+              </RouteTransition>
+            </Suspense>
           </ThemeProvider>
         </SessionProvider>
         {/* Google Analytics */}

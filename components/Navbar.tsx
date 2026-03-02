@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import UserMenu from "./UserMenu";
@@ -52,6 +53,19 @@ export default function Navbar() {
       >
         {/* Logo */}
         <Link href="/" style={{ textDecoration: "none" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", lineHeight: 1 }}>
+            <Image
+              src="/gom.jpeg"
+              alt="GangOfMusafirs Logo"
+              width={40}
+              height={40}
+              style={{
+                borderRadius: "50%",
+                objectFit: "cover",
+                flexShrink: 0,
+              }}
+              priority
+            />
           <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
             <span
               style={{
@@ -78,6 +92,7 @@ export default function Navbar() {
             >
               Travel Experiences
             </span>
+          </div>
           </div>
         </Link>
 

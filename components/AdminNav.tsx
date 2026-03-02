@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import {
     Mountain,
     Package,
@@ -10,6 +11,7 @@ import {
     CreditCard,
     ChevronLeft,
     LogOut,
+    ShieldCheck,
 } from "lucide-react";
 
 const tabs = [
@@ -22,9 +24,15 @@ const tabs = [
 export default function AdminNav() {
     const pathname = usePathname();
     const router = useRouter();
+    const { data: session } = useSession();
 
     const handleLogout = async () => {
+        // Clear legacy cookie
         await fetch("/api/auth/logout", { method: "POST" });
+        // Sign out of NextAuth
+        if (session) {
+            await signOut({ redirect: false });
+        }
         router.push("/admin/login");
     };
 
@@ -89,24 +97,56 @@ export default function AdminNav() {
                             <Mountain size={22} /> Admin Dashboard
                         </h1>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "0.4rem",
-                            padding: "0.5rem 1rem",
-                            borderRadius: "999px",
-                            border: "1px solid rgba(255,255,255,0.4)",
-                            background: "rgba(255,255,255,0.15)",
-                            color: "#fff",
-                            fontWeight: 600,
-                            fontSize: "0.8rem",
-                            cursor: "pointer",
-                        }}
-                    >
-                        <LogOut size={14} /> Logout
-                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                        {session?.user && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.4rem",
+                                    padding: "0.35rem 0.75rem",
+                                    borderRadius: "999px",
+                                    background: "rgba(255,255,255,0.15)",
+                                    color: "rgba(255,255,255,0.9)",
+                                    fontSize: "0.75rem",
+                                    fontWeight: 600,
+                                }}
+                            >
+                                <ShieldCheck size={13} />
+                                {session.user.name || session.user.email}
+                                <span
+                                    style={{
+                                        fontSize: "0.6rem",
+                                        padding: "0.1rem 0.4rem",
+                                        borderRadius: "999px",
+                                        background: "rgba(255,255,255,0.25)",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.05em",
+                                    }}
+                                >
+                                    {session.user.role}
+                                </span>
+                            </div>
+                        )}
+                        <button
+                            onClick={handleLogout}
+                            style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "0.4rem",
+                                padding: "0.5rem 1rem",
+                                borderRadius: "999px",
+                                border: "1px solid rgba(255,255,255,0.4)",
+                                background: "rgba(255,255,255,0.15)",
+                                color: "#fff",
+                                fontWeight: 600,
+                                fontSize: "0.8rem",
+                                cursor: "pointer",
+                            }}
+                        >
+                            <LogOut size={14} /> Logout
+                        </button>
+                    </div>
                 </div>
             </header>
 

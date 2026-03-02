@@ -456,3 +456,198 @@ select:focus-visible {
   outline: 2px solid var(--color-terracotta);
   outline-offset: 2px;
 }
+
+/* ═══════════════════════════════════════
+   Page Loader (initial load splash)
+   ═══════════════════════════════════════ */
+
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.page-loader--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Background blobs */
+.page-loader__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.page-loader__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.page-loader__blob--1 {
+  width: 420px;
+  height: 420px;
+  top: -10%;
+  right: -5%;
+  background: radial-gradient(circle, var(--color-terracotta), transparent 70%);
+  animation: loaderFloat 3s ease-in-out infinite;
+}
+
+.page-loader__blob--2 {
+  width: 350px;
+  height: 350px;
+  bottom: -8%;
+  left: -5%;
+  background: radial-gradient(circle, var(--color-sage), transparent 70%);
+  animation: loaderFloat 3.5s ease-in-out infinite reverse;
+}
+
+.page-loader__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  animation: loaderEntry 0.7s ease-out;
+}
+
+.page-loader__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, var(--color-terracotta), var(--color-sunset));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(192, 92, 58, 0.3);
+  animation: loaderPulse 1.5s ease-in-out infinite;
+}
+
+.page-loader__title {
+  font-family: var(--font-outfit);
+  font-weight: 800;
+  font-size: 1.75rem;
+  background: linear-gradient(135deg, var(--color-terracotta), var(--color-sunset));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0.5rem 0 0;
+}
+
+.page-loader__subtitle {
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
+}
+
+/* Bouncing dots */
+.page-loader__dots {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
+
+.page-loader__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-terracotta);
+  opacity: 0.4;
+  animation: loaderBounce 1.2s ease-in-out infinite;
+}
+
+.page-loader__dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.page-loader__dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes loaderEntry {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes loaderPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 32px rgba(192, 92, 58, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(192, 92, 58, 0.45);
+  }
+}
+
+@keyframes loaderBounce {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes loaderFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(15px, -15px) scale(1.05);
+  }
+}
+
+/* ═══════════════════════════════════════
+   Route Transition (navigation progress)
+   ═══════════════════════════════════════ */
+
+.route-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 99998;
+  background: linear-gradient(90deg, var(--color-terracotta), var(--color-sunset), var(--color-terracotta-light));
+  transform-origin: left;
+  transition: transform 0.25s ease-out;
+  box-shadow: 0 0 12px rgba(192, 92, 58, 0.5);
+  border-radius: 0 2px 2px 0;
+}
+
+.route-content {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.route-content--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.route-content--transitioning {
+  opacity: 0.6;
+  transform: translateY(4px);
+}
