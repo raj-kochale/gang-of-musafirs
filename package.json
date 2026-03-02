@@ -11,7 +11,6 @@
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
     "@types/nodemailer": "^7.0.11",
-    "dns": "^0.2.2",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
     "mongodb": "^7.1.0",

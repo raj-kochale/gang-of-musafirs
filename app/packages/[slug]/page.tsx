@@ -42,6 +42,16 @@ export default function PackageDetailPage({
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "itinerary" | "details">("overview");
 
+  // Lock body scroll when lightbox is open
+  useEffect(() => {
+    if (lightbox !== null) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [lightbox]);
+
   const fetchPackage = useCallback(async () => {
     try {
       const res = await fetch("/api/packages");
@@ -690,6 +700,7 @@ export default function PackageDetailPage({
             alignItems: "center",
             justifyContent: "center",
             animation: "lbFadeIn 0.25s ease-out",
+            overflow: "hidden",
           }}
           onClick={() => setLightbox(null)}
         >
@@ -803,12 +814,15 @@ export default function PackageDetailPage({
             alt={`${pkg.name} - Image ${lightbox + 1}`}
             onClick={(e) => e.stopPropagation()}
             style={{
-              maxWidth: "90vw",
-              maxHeight: "80vh",
+              maxWidth: "min(90vw, 1200px)",
+              maxHeight: "70vh",
+              width: "auto",
+              height: "auto",
               objectFit: "contain",
               borderRadius: "0.75rem",
               boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
               animation: "lbZoomIn 0.3s ease-out",
+              flexShrink: 0,
             }}
           />
 
@@ -818,10 +832,11 @@ export default function PackageDetailPage({
             style={{
               display: "flex",
               gap: "0.4rem",
-              marginTop: "1rem",
+              marginTop: "0.75rem",
               overflowX: "auto",
               maxWidth: "90vw",
               padding: "0.25rem",
+              flexShrink: 0,
             }}
           >
             {pkg.gallery.map((img, i) => (
