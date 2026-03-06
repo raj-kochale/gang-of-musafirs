@@ -119,6 +119,11 @@ async function sendBookingConfirmation(booking: any) {
         <tr><td style="padding: 6px 0; font-weight: 600; width: 140px;">Trip</td><td>${booking.packageName}</td></tr>
         <tr><td style="padding: 6px 0; font-weight: 600;">Travel Date</td><td>${booking.travelDate}</td></tr>
         <tr><td style="padding: 6px 0; font-weight: 600;">Travelers</td><td>${booking.travelers}</td></tr>
+        ${booking.travelerNames && booking.travelerNames.length > 0 ? `
+        <tr><td style="padding: 6px 0; font-weight: 600;">Traveler Names</td><td>
+          1. ${booking.fullName} (Lead)<br/>
+          ${booking.travelerNames.map((n: string, i: number) => `${i + 2}. ${n}`).join("<br/>")}
+        </td></tr>` : ""}
         <tr><td style="padding: 6px 0; font-weight: 600;">Total Paid</td><td>₹${booking.totalAmount.toLocaleString("en-IN")}</td></tr>
         <tr><td style="padding: 6px 0; font-weight: 600;">Payment ID</td><td style="font-size: 12px; color: #7A6A5E;">${booking.razorpayPaymentId}</td></tr>
         <tr><td style="padding: 6px 0; font-weight: 600;">Booking Date</td><td>${date}</td></tr>
@@ -143,6 +148,11 @@ async function sendBookingConfirmation(booking: any) {
         <tr><td style="padding: 6px 0; font-weight: 600;">Trip</td><td>${booking.packageName}</td></tr>
         <tr><td style="padding: 6px 0; font-weight: 600;">Travel Date</td><td>${booking.travelDate}</td></tr>
         <tr><td style="padding: 6px 0; font-weight: 600;">Travelers</td><td>${booking.travelers}</td></tr>
+        ${booking.travelerNames && booking.travelerNames.length > 0 ? `
+        <tr><td style="padding: 6px 0; font-weight: 600;">Traveler Names</td><td>
+          1. ${booking.fullName} (Lead)<br/>
+          ${booking.travelerNames.map((n: string, i: number) => `${i + 2}. ${n}`).join("<br/>")}
+        </td></tr>` : ""}
         <tr><td style="padding: 6px 0; font-weight: 600;">Total Amount</td><td>₹${booking.totalAmount.toLocaleString("en-IN")}</td></tr>
         <tr><td style="padding: 6px 0; font-weight: 600;">Payment ID</td><td style="font-size: 12px;">${booking.razorpayPaymentId}</td></tr>
         ${booking.specialRequests ? `<tr><td style="padding: 6px 0; font-weight: 600;">Special Requests</td><td>${booking.specialRequests}</td></tr>` : ""}

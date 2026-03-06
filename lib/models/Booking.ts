@@ -7,6 +7,7 @@ const BookingSchema = new Schema(
         email: { type: String, required: true },
         phone: { type: String, required: true },
         travelers: { type: Number, required: true, min: 1 },
+        travelerNames: { type: [String], default: [] },
         travelDate: { type: String, required: true },
         specialRequests: { type: String, default: "" },
 

@@ -43,6 +43,13 @@ export async function POST(req: NextRequest) {
         const travelers = Number(body.travelers);
         const pricePerPerson = Number(body.pricePerPerson);
 
+        // Sanitize traveler names array
+        const rawNames = Array.isArray(rawBody.travelerNames) ? rawBody.travelerNames : [];
+        const travelerNames: string[] = rawNames
+            .map((n: unknown) => sanitizeString(n))
+            .filter((n: string) => n.length > 0)
+            .slice(0, 30);
+
         // Validate required fields
         if (
             !fullName ||
@@ -106,6 +113,7 @@ export async function POST(req: NextRequest) {
             email,
             phone,
             travelers: Number(travelers),
+            travelerNames,
             travelDate,
             specialRequests,
             packageId,

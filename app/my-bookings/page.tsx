@@ -23,6 +23,7 @@ type Booking = {
     fullName: string;
     email: string;
     travelers: number;
+    travelerNames?: string[];
     travelDate: string;
     packageName: string;
     packageSlug: string;
@@ -243,6 +244,12 @@ export default function MyBookingsPage() {
                                             }}
                                         >
                                             <Detail icon={<Users size={13} />} label="Travelers" value={`${b.travelers}`} />
+                                            {b.travelerNames && b.travelerNames.length > 0 && (
+                                                <div style={{ gridColumn: "1 / -1", fontSize: 13, color: "var(--color-muted)" }}>
+                                                    <strong style={{ color: "var(--color-text)" }}>Traveler Names:</strong>{" "}
+                                                    {b.fullName} (Lead), {b.travelerNames.join(", ")}
+                                                </div>
+                                            )}
                                             <Detail
                                                 icon={<Calendar size={13} />}
                                                 label="Travel Date"

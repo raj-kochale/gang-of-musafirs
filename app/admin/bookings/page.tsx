@@ -24,6 +24,7 @@ type Booking = {
     email: string;
     phone: string;
     travelers: number;
+    travelerNames?: string[];
     travelDate: string;
     specialRequests?: string;
     packageName: string;
@@ -366,6 +367,11 @@ export default function AdminBookingsPage() {
                                 >
                                     <Info icon={<MapPin size={12} />} label="Package" value={b.packageName} />
                                     <Info icon={<Users size={12} />} label="Travelers" value={String(b.travelers)} />
+                                    {b.travelerNames && b.travelerNames.length > 0 && (
+                                        <div style={{ gridColumn: "1 / -1", fontSize: 12, color: "var(--color-muted)" }}>
+                                            <strong>Names:</strong> {b.fullName} (Lead), {b.travelerNames.join(", ")}
+                                        </div>
+                                    )}
                                     <Info
                                         icon={<Calendar size={12} />}
                                         label="Travel Date"

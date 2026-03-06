@@ -61,8 +61,24 @@ function BookContent() {
         specialRequests: "",
     });
 
-    const set = (key: string, value: string | number) =>
-        setForm((f) => ({ ...f, [key]: value }));
+    const [travelerNames, setTravelerNames] = useState<string[]>([]);
+
+    const set = (key: string, value: string | number) => {
+        setForm((f) => {
+            const next = { ...f, [key]: value };
+            // Sync travelerNames array length when travelers count changes
+            if (key === "travelers") {
+                const count = Number(value);
+                setTravelerNames((prev) => {
+                    const arr = [...prev];
+                    // Grow or shrink to (count - 1) since the lead booker is traveler #1
+                    while (arr.length < count - 1) arr.push("");
+                    return arr.slice(0, Math.max(0, count - 1));
+                });
+            }
+            return next;
+        });
+    };
 
     /* ── Fetch package ── */
     const fetchPackage = useCallback(async () => {
@@ -133,6 +149,7 @@ function BookContent() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     ...form,
+                    travelerNames: travelerNames.filter((n) => n.trim()),
                     packageId: pkg.id || pkg.slug,
                     packageSlug: pkg.slug,
                     packageName: pkg.name,
@@ -367,6 +384,17 @@ function BookContent() {
                                     <span style={{ color: "var(--color-muted)" }}>Travelers</span>
                                     <span style={{ fontWeight: 600 }}>{form.travelers}</span>
                                 </div>
+                                {travelerNames.filter((n) => n.trim()).length > 0 && (
+                                    <div style={{ paddingTop: "0.25rem" }}>
+                                        <span style={{ color: "var(--color-muted)", fontSize: 13 }}>Traveler Names</span>
+                                        <div style={{ fontSize: 13, fontWeight: 500, paddingLeft: 4, marginTop: 2 }}>
+                                            <div>1. {form.fullName} (Lead)</div>
+                                            {travelerNames.filter((n) => n.trim()).map((n, i) => (
+                                                <div key={i}>{i + 2}. {n}</div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <span style={{ color: "var(--color-muted)" }}>Total Paid</span>
                                     <span style={{ fontWeight: 700, color: "var(--color-terracotta)" }}>
@@ -557,6 +585,53 @@ function BookContent() {
                                         />
                                     </Field>
                                 </div>
+
+                                {/* Additional Traveler Names */}
+                                {form.travelers > 1 && (
+                                    <div style={{
+                                        background: "var(--color-surface)",
+                                        borderRadius: 12,
+                                        padding: "1rem 1.25rem",
+                                        border: "1px solid var(--color-border)",
+                                    }}>
+                                        <p style={{
+                                            fontSize: 13,
+                                            fontWeight: 600,
+                                            color: "var(--color-terracotta)",
+                                            marginBottom: "0.75rem",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 6,
+                                        }}>
+                                            <Users size={14} />
+                                            Additional Traveler Names
+                                        </p>
+                                        <p style={{ fontSize: 12, color: "var(--color-muted)", marginBottom: "0.75rem" }}>
+                                            {form.fullName || "Lead booker"} is Traveler #1. Please enter names for the remaining travelers.
+                                        </p>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                                            {travelerNames.map((name, i) => (
+                                                <div key={i} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                                    <span style={{ fontSize: 12, color: "var(--color-muted)", minWidth: 24 }}>#{i + 2}</span>
+                                                    <input
+                                                        className="input-field"
+                                                        type="text"
+                                                        placeholder={`Traveler ${i + 2} full name`}
+                                                        value={name}
+                                                        onChange={(e) => {
+                                                            setTravelerNames((prev) => {
+                                                                const arr = [...prev];
+                                                                arr[i] = e.target.value;
+                                                                return arr;
+                                                            });
+                                                        }}
+                                                        style={{ flex: 1 }}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Special Requests */}
                                 <Field label="Special Requests" icon={<MessageSquare size={15} />}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mountain } from "lucide-react";
+import Image from "next/image";
 
 /**
  * Full-screen branded loader shown on initial page load.
@@ -36,8 +36,15 @@ export default function PageLoader() {
 
             {/* Center brand mark */}
             <div className="page-loader__content">
-                <div className="page-loader__icon">
-                    <Mountain size={36} color="white" strokeWidth={2.5} />
+                <div className="page-loader__icon" style={{ background: "transparent", borderRadius: "50%", overflow: "hidden" }}>
+                    <Image
+                        src="/gom.jpeg"
+                        alt="GangOfMusafirs Logo"
+                        width={56}
+                        height={56}
+                        priority
+                        style={{ borderRadius: "50%", objectFit: "cover" }}
+                    />
                 </div>
                 <h1 className="page-loader__title">GangOfMusafirs</h1>
                 <p className="page-loader__subtitle">Travel Experiences</p>

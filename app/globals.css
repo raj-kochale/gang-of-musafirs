@@ -524,13 +524,14 @@ select:focus-visible {
 .page-loader__icon {
   width: 72px;
   height: 72px;
-  border-radius: 1.25rem;
-  background: linear-gradient(135deg, var(--color-terracotta), var(--color-sunset));
+  border-radius: 50%;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 32px rgba(192, 92, 58, 0.3);
   animation: loaderPulse 1.5s ease-in-out infinite;
+  overflow: hidden;
 }
 
 .page-loader__title {
