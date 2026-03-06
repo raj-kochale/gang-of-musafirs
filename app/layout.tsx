@@ -11,7 +11,7 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   title: {
-    default: "GangOfMusafirs – Curated Travel Experiences Across India",
+    default: "GangOfMusafirs",
     template: "%s | GangOfMusafirs",
   },
   description:
