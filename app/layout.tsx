@@ -11,26 +11,26 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   title: {
-    default: "GangOfMusafirs",
-    template: "%s | GangOfMusafirs",
+    default: "GangofMusafirs",
+    template: "%s | GangofMusafirs",
   },
   description:
-    "Explore India like never before with GangOfMusafirs. Curated group trips to Hill Stations, Beaches, Adventure & Cultural destinations. Book your next adventure today!",
+    "Explore India like never before with GangofMusafirs. Curated group trips to Hill Stations, Beaches, Adventure & Cultural destinations. Book your next adventure today!",
   keywords:
-    "group travel India, curated trips, travel agency, hill stations, beach trips, adventure travel, GangOfMusafirs, off the beaten path, Manali, Goa, Rishikesh, Rajasthan",
+    "group travel India, curated trips, travel agency, hill stations, beach trips, adventure travel, GangofMusafirs, off the beaten path, Manali, Goa, Rishikesh, Rajasthan",
   metadataBase: new URL("https://www.gangofmusafirs.online"),
   openGraph: {
-    title: "GangOfMusafirs – Curated Travel Experiences Across India",
+    title: "GangofMusafirs – Curated Travel Experiences Across India",
     description:
-      "Explore India like never before with GangOfMusafirs. Curated group trips to Hill Stations, Beaches, Adventure & Cultural destinations.",
+      "Explore India like never before with GangofMusafirs. Curated group trips to Hill Stations, Beaches, Adventure & Cultural destinations.",
     type: "website",
-    siteName: "GangOfMusafirs",
+    siteName: "GangofMusafirs",
     locale: "en_IN",
     url: "https://www.gangofmusafirs.online",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GangOfMusafirs – Curated Travel Experiences",
+    title: "GangofMusafirs – Curated Travel Experiences",
     description:
       "Off-the-beaten-path group adventures across India. Expert-planned, stress-free travel.",
   },
